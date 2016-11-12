@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<html>
+<head>
+	<title>Godwin's Law</title>
+	<link rel="stylesheet" type="text/css" href="style.css">
+	<!-- 	<link rel="stylesheet" href="styles.css"> -->
+		<script src="http://d3js.org/d3.v3.min.js"></script>
+		<script src="http://d3js.org/topojson.v1.min.js"></script>
+		<script src="http://d3js.org/queue.v1.min.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+		<script src="https://code.highcharts.com/highcharts.js"></script>
+		<script src="https://code.highcharts.com/modules/exporting.js"></script>
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+</head>
+<body>
+
+<!-- 	<canvas id="originalCanvas" width="200" height="200"></canvas> -->
+	<div class="container" style="width:900px">
+		<h1 class="title">Toxicity in Online Communities</h1>
+		<h2 class="subtitle">An interactive exploration of Godwin's Law</h2>
+		<div class="text">
+			<br><p>Godwin's law is an Internet theory that was created in the early 1990s by an American attorney named Mike Godwin. Godwin's Law states that "as an online discussion grows longer, the probability of a comparison involving Nazism or Hitler approaches one."​​ In other words, the longer an online discussion thread gets, the more likely it becomes that someone compares someone or something to Hitler or Nazism. (via Wikipedia).</p>
+			<div id="container" style="min-width: 310px; height: 400px"></div>
+
+			<br><p class="quote">"I framed Godwin’s Law as a pseudo-mathematical probability statement, almost like a law of physics. I wanted to hint that most people who brought Nazis into a debate about, say, New York Gov. Andrew Cuomo’s views on gun control weren’t being thoughtful and independent. Instead, they were acting just as predictably, and unconsciously, as a log rolling down a hill." —Mike Godwin (via Washington Post)</p>
+
+			<p>What Godwin is getting at is that most references to Hitler and the Nazis are cop-outs that preclude the possibility of a more productive, meaningful discussion. To put it another way, bringing Hitler and the Nazis into an online conversation about something entirely unrelated is the digital equivalent of saying, "I know you are, but what am I?"</p>
+
+			<p>As the Internet has evolved, Godwin's Law has come to represent losing an argument. Once the Nazi reference has been made, Godwin's Law is "invoked" and the conversation is effectively over. In online forums like Reddit, comparisons or references to Hitler or the Nazis are met with memes like these that gleefully declare that the arguer has lost the argument.</p><br>
+
+			<img src="godwin5.jpg" style="height:200px">
+			<img src="godwin1.jpg" style="height:200px">
+			<img src="godwin4.jpg" style="height:200px">
+
+			<br><br><p>Though these memes are humorous, the reality is that references like these can be harmful and toxic. If there is a lesson to be learned from Godwin's Law, it is that the likelihood of thoughtful conversation in a prolonged Internet discussion with many contributors decreases as the conversation drags on. The more comments are added, the more likely it is that someone will mention Hitler or the Nazis.<br>
+
+			<h3>What happens as the comment thread grows?</h3>
+			
+			 See for yourself! Each square represents 50 comments. 
+			 <br>Green squares ( <img src="green.png" style="height:15px"> ) are positive, red squares ( <img src="red.png" style="height:15px"> ) represent negative comments, and consecutive black squares ( <img src="black.png" style="height:15px">  <img src="black.png" style="height:15px">  <img src="black.png" style="height:15px"> ) signal that the conversation is over. These comments could contain references to the Nazis. What do you notice as you continue to click the button?</p>
+
+			<br><button id = "button" class="btn add-comment">Add Comment</button></p>
+
+			<div class="comment-block">
+			<svg id="leftAlign" class="blocks" width="1280" height="200">
+			<g id="comment-g"  transform="translate(150,0)">
+			</div>
+
+			<p>The more you click the button, the more likely it is that a red, or negative, comment square will appear. This is what happens in online communities, where the combination of anonymity and an influx of contributors can quickly lead a conversation toward an invocation of Godwin's Law.</p>
+
+			In real life, the speed with which Godwin's law is invoked depends greatly on the topic at hand. Mention Donald Trump on Facebook, and you may find your green squares turning red more quickly than if you post a picture of a kitten.</p>
+
+			<h3>Key Takeaways</h3>
+			<p>As you engage in online conversations, remember these things:
+			<ul>1. <strong>Be thoughtful with your comments:</strong>  Odds are, you're commenting on something online because it's something you care about, whether that's a sports team or a political issue. And, odds are you have something important to say. Don't fall prey to Godwin's Law and get slapped with a meme— think of other ways to get your point across than bringing Hitler into the equation. People will think you're clever for calling someone who obnoxiously corrects your grammar an "angry grammarian" instead of a "grammar nazi."</ul>
+
+			<ul>2. <strong>Watch out for trolls:</strong>  Online forums make it easy to voice your opinion— they also make it easy to anonymously point fingers, spout conspiracy theories, and verbally abuse others without fear of reprisal. Be on the lookout for people who do this, also known as "Internet Trolls." These people lurk online and engaging them in extended conversation is unlikely to produce a positive outcome; when the conversation starts getting long, quit while you're ahead.</ul>
+
+			<ul>3. <strong>If you can, say it in person:</strong>  Because of Internet Trolls, online forums like Reddit often are not the most effective way to engage with others or change minds. When a conversation thread begins to spiral out of control and involve too many people and comments, the likelihood that your points will be heard or internalized becomes increasingly slim. Bring these conversations offline by engaging with your friends and community. You have important things to say and, thankfully, Godwin's Law does not exist in-person (except, perhaps, at Trump rallies).</ul>
+
+			<ul>4. <strong>Find your favorite meme: </strong> Now that you know about Godwin's Law and the proper time to invoke it, put your knowledge to good use. If you thoughtfully make your point, and someone comes back at you with a Hitler reference, reply with your meme to let them know they've lost the argument. And then send them a link to this site :).</ul>
+		</div>
+
+    <div id="chart"></div>
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <script>
+    	//create empty array where random numbers between 0-1 will be stored
+    	var blocks = []
+    	var width = 15
+
+        //create set list of numbers in descending order to weight probability of "bad" comment being selected
+    	var probabilityA = Array.apply(null, Array(100)).map(function (_, i) {return i;});
+    		probabilityA.reverse();
+    		// console.log(probabilityA);
+    	var xVal = 0;
+    
+        //generate random number between 0-1 and put in newBlock variable
+        function newBlock(){
+      		p = Math.random() * 1;
+      		blocks.push(p);
+      		console.log(blocks);
+      	}
+      	var screenOffsetter;
+         function addComment(d){ //what happens when you click button
+             newBlock();
+             idx = blocks.length - 1
+             console.log(blocks.length)
+             xVal = (idx * (width+15))
+             console.log('xvalue: ' + xVal)
+             console.log('width: ' + width)
+             console.log('idx: ' + idx)
+             var svg_width = 1280;
+             var commentBlock = d3.select("svg.blocks"); //reference comment block
+         
+             var xPosition = (idx * (width+15));
+             commentBlock.append('rect')
+               .attr("width", 20)
+               .attr("height", 20)
+               .attr('y', ((Math.floor(blocks.length/20)+1)*20))
+               .attr('x',function(){
+                   if(idx != 0 && xVal % 1290 == 0){
+                       screenOffsetter = xVal/1290;
+                       return xPosition - (svg_width*screenOffsetter) - (10*screenOffsetter);
+                   }
+                   else if(xVal > svg_width){
+                       console.log(screenOffsetter)
+                       console.log('offsetter: ' + (xPosition - svg_width*screenOffsetter));
+                       return xPosition - (svg_width*screenOffsetter) - (10*screenOffsetter);
+                   }
+                   else
+                   {
+                       return xPosition;
+                   }
+               })
+                 .style("fill", function() {
+                    var blockColor;
+                        if (blocks[idx] <= probabilityA[idx]/100) { blockColor = "green";
+                        } 
+                        else if (blocks[idx] > ((probabilityA[idx]/100)+.04)) { blockColor = "red";
+                        } 
+                        return blockColor;
+                });
+         }
+
+      	btn = d3.select("btn add-comment")
+      		    .attr("value","addComment")
+                .attr("onclick","addComment()")
+
+      	console.log(btn);
+      	
+      	(function(d3) {
+
+      	d3.select(".add-comment").on('click', addComment); // .on attaches code to event in D3
+
+      })(window.d3);
+
+
+    	$(function () {
+	    Highcharts.chart('container', {
+	        title: {
+	            text: "Godwin's Law Probability",
+	            x: -20 //center
+	        },
+	        subtitle: {
+	            text: 'Likelihood of Hitler or Nazi mention over time',
+	            x: -20
+	        },
+	        xAxis: {
+	            categories: ['100', '300', '500', '700', '900', '1100',
+	                '1300', '1500'],
+	            title: {
+	            		text: 'Number of comments posted'
+	            }
+	        },
+	        
+	        yAxis: {
+	            min: 0,
+	            max: 1,
+	            tickInterval: .1,
+	            lineColor: '#808080',
+	            lineWidth: 1,
+	            title: {
+	                text: 'Probability of Nazi Mention'
+
+	            },
+	            
+	            plotLines: [{
+	                value: 0,
+	                width: 1,
+	                color: '#808080'
+	            }]
+	        },
+	        tooltip: {
+	            valueSuffix: ''
+	        },
+	        legend: {
+	            layout: 'vertical',
+	            align: 'right',
+	            verticalAlign: 'middle',
+	            borderWidth: 0
+	        },
+
+	        series: [{
+	            name: 'Probability of Nazi mention',
+	            data: [0, 0.07, .175, .3, .42, .53, .7, .95]
+	        }]
+	    });
+	});
+
+    </script>
+
+</html>  
+
+
+<!-- Part I: Button that begins a for loop for a coin flip: make it a biased coin so that with some probability (p) it's a regular message, and some other (1-p) it's negative. It needs to add up to 1.
+
+Python random number generator Math.random() gives back a number between 0-1. p = Math.random(). If p>.8 {bad message}. Else {good message}. You're basically keeping a counter of good and bad messages and putting them into a circle graph.
+
+Make pie, then arc, need dataset. Highcharts. Network diagram showing the point at which the community collapses? Probabilities.-->
